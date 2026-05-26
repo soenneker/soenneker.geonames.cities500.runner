@@ -39,7 +39,7 @@ jobs:
         run: dotnet restore src/Soenneker.GeoNames.Cities500.Runner/Soenneker.GeoNames.Cities500.Runner.csproj
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build src/Soenneker.GeoNames.Cities500.Runner/Soenneker.GeoNames.Cities500.Runner.csproj --configuration Release --no-restore
 
       - name: Run
-        run: dotnet run --project src/Soenneker.GeoNames.Cities500.Runner/Soenneker.GeoNames.Cities500.Runner.csproj --no-restore --verbosity normal --framework net10.0 -c Release
+        run: dotnet run --project src/Soenneker.GeoNames.Cities500.Runner/Soenneker.GeoNames.Cities500.Runner.csproj --configuration Release --no-restore --no-build --verbosity normal
