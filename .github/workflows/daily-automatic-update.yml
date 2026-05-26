@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 
 env:
+  ASPNETCORE_ENVIRONMENT: Production
   GH__USERNAME: ${{ secrets.GH__USERNAME }}
   GH__TOKEN: ${{ secrets.GH__TOKEN }}
   GIT__TOKEN: ${{ secrets.GIT__TOKEN }}
@@ -34,26 +35,8 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: Install dependencies with retry
-        run: |
-          retries=5
-          base_wait_time=15
-          exponent=2
-
-          for i in $(seq 1 $retries); do
-            if dotnet restore; then
-              break
-            fi
-
-            if [ $i -lt $retries ]; then
-              wait_time=$(awk "BEGIN {print int($base_wait_time * ($exponent ^ ($i - 1)))}")
-              echo "dotnet restore failed, retrying in $wait_time seconds..."
-              sleep $wait_time
-            else
-              echo "dotnet restore failed after $retries retries."
-              exit 1
-            fi
-          done
+      - name: Restore
+        run: dotnet restore src/Soenneker.GeoNames.Cities500.Runner/Soenneker.GeoNames.Cities500.Runner.csproj
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
