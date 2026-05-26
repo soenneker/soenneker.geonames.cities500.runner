@@ -23,7 +23,7 @@ public static class Program
                                               .CreateBootstrapLogger();
 
         await Host.CreateDefaultBuilder(args)
-                  .UseSerilog((context, services, configuration) => configuration.ConfigureLogger(context.Configuration, services))
+                  .UseSerilog((context, configuration) => configuration.ConfigureLoggerSync(context.Configuration))
                   .ConfigureServices((_, services) =>
                   {
                       services.AddSingleton<IConfiguration>(config);
