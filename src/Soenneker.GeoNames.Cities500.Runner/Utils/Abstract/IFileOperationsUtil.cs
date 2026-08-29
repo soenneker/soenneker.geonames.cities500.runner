@@ -9,10 +9,10 @@ namespace Soenneker.GeoNames.Cities500.Runner.Utils.Abstract;
 public interface IFileOperationsUtil
 {
     /// <summary>
-    /// Executes the extract data file operation.
+    /// Extracts data File.
     /// </summary>
-    /// <param name="zipFilePath">The zip file path.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task containing the result of the operation.</returns>
+    /// <param name="zipFilePath">Path of the zip file to use.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
+    /// <returns>A task whose result is the text returned by extract Data File.</returns>
     ValueTask<string> ExtractDataFile(string zipFilePath, CancellationToken cancellationToken = default);
 }
