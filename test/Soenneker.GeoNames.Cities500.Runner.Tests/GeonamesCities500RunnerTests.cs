@@ -1,5 +1,6 @@
 using System.IO;
 using System.IO.Compression;
+using System.Threading;
 using System.Threading.Tasks;
 using Soenneker.GeoNames.Cities500.Runner.Utils.Abstract;
 using Soenneker.Tests.HostedUnit;
@@ -17,7 +18,7 @@ public sealed class GeonamesCities500RunnerTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Extracts_cities500_data_file()
+    public async Task Extracts_cities500_data_file(CancellationToken cancellationToken)
     {
         string zipFilePath = Path.Combine(Path.GetTempPath(), $"{nameof(Extracts_cities500_data_file)}.zip");
 
@@ -35,7 +36,7 @@ public sealed class GeonamesCities500RunnerTests : HostedUnitTest
             await writer.WriteLineAsync("6167865\tToronto\tToronto\t\t43.70011\t-79.4163\tP\tPPL\tCA\t\tON\t\t\t\t2600000\t\t76\tAmerica/Toronto\t2024-11-12");
         }
 
-        string resultPath = await _fileOperationsUtil.ExtractDataFile(zipFilePath);
+        string resultPath = await _fileOperationsUtil.ExtractDataFile(zipFilePath, cancellationToken: cancellationToken);
         string result = (await File.ReadAllTextAsync(resultPath)).Replace("\r\n", "\n");
 
         await Assert.That(result.Trim()).IsEqualTo("New York City\tNY\t40.71427\t-74.00597");
