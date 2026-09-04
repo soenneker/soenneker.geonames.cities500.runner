@@ -9,6 +9,7 @@ using Soenneker.GeoNames.Cities500.Runner.Utils.Abstract;
 
 namespace Soenneker.GeoNames.Cities500.Runner.Utils;
 
+/// <inheritdoc cref="IFileOperationsUtil" />
 public sealed class FileOperationsUtil : IFileOperationsUtil
 {
     private const string _usCountryCode = "US";
