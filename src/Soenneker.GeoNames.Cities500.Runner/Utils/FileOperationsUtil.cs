@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
@@ -55,12 +56,11 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
 
             totalRows++;
 
-            string[] columns = line.Split('\t');
-
-            if (columns.Length < 11 || columns[8] != _usCountryCode)
+            string? output = FormatUsRow(line);
+            if (output is null)
                 continue;
 
-            await writer.WriteLineAsync($"{columns[1]}\t{columns[10]}\t{columns[4]}\t{columns[5]}");
+            await writer.WriteLineAsync(output);
             writtenRows++;
         }
 
@@ -69,4 +69,16 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
 
         return resultFilePath;
     }
+
+    private static string? FormatUsRow(string line)
+    {
+        Span<Range> columns = stackalloc Range[12];
+        ReadOnlySpan<char> span = line;
+        int count = span.Split(columns, '\t');
+        if (count < 11 || !span[columns[8]].SequenceEqual(_usCountryCode))
+            return null;
+
+        return $"{span[columns[1]]}\t{span[columns[10]]}\t{span[columns[4]]}\t{span[columns[5]]}";
+    }
+
 }
