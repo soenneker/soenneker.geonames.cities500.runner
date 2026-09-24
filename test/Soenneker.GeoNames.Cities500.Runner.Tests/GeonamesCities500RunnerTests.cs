@@ -1,3 +1,4 @@
+using Soenneker.Utils.File.Abstract;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
@@ -10,10 +11,13 @@ namespace Soenneker.GeoNames.Cities500.Runner.Tests;
 [ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
 public sealed class GeonamesCities500RunnerTests : HostedUnitTest
 {
+    private readonly IFileUtil _fileUtil;
+
     private readonly IFileOperationsUtil _fileOperationsUtil;
 
     public GeonamesCities500RunnerTests(Host host) : base(host)
     {
+        _fileUtil = Resolve<IFileUtil>(true);
         _fileOperationsUtil = Resolve<IFileOperationsUtil>(true);
     }
 
@@ -22,10 +26,10 @@ public sealed class GeonamesCities500RunnerTests : HostedUnitTest
     {
         string zipFilePath = Path.Combine(Path.GetTempPath(), $"{nameof(Extracts_cities500_data_file)}.zip");
 
-        if (File.Exists(zipFilePath))
-            File.Delete(zipFilePath);
+        if ((await _fileUtil.Exists(zipFilePath)))
+            await _fileUtil.Delete(zipFilePath);
 
-        await using (FileStream zipStream = File.Create(zipFilePath))
+        await using (FileStream zipStream = _fileUtil.OpenWrite(zipFilePath))
         {
             using var archive = new ZipArchive(zipStream, ZipArchiveMode.Create);
             ZipArchiveEntry entry = archive.CreateEntry(Constants.SourceFileName);
@@ -37,7 +41,7 @@ public sealed class GeonamesCities500RunnerTests : HostedUnitTest
         }
 
         string resultPath = await _fileOperationsUtil.ExtractDataFile(zipFilePath, cancellationToken: cancellationToken);
-        string result = (await File.ReadAllTextAsync(resultPath)).Replace("\r\n", "\n");
+        string result = (await _fileUtil.Read(resultPath)).Replace("\r\n", "\n");
 
         await Assert.That(result.Trim()).IsEqualTo("New York City\tNY\t40.71427\t-74.00597");
     }
