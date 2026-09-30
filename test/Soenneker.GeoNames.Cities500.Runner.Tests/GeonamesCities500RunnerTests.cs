@@ -22,7 +22,7 @@ public sealed class GeonamesCities500RunnerTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Extracts_cities500_data_file(CancellationToken cancellationToken)
+    public async ValueTask Extracts_cities500_data_file(CancellationToken cancellationToken)
     {
         string zipFilePath = Path.Combine(Path.GetTempPath(), $"{nameof(Extracts_cities500_data_file)}.zip");
 
