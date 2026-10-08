@@ -26,8 +26,8 @@ public sealed class GeonamesCities500RunnerTests : HostedUnitTest
     {
         string zipFilePath = Path.Combine(Path.GetTempPath(), $"{nameof(Extracts_cities500_data_file)}.zip");
 
-        if ((await _fileUtil.Exists(zipFilePath)))
-            await _fileUtil.Delete(zipFilePath);
+        if ((await _fileUtil.Exists(zipFilePath, cancellationToken: cancellationToken)))
+            await _fileUtil.Delete(zipFilePath, cancellationToken: cancellationToken);
 
         await using (FileStream zipStream = _fileUtil.OpenWrite(zipFilePath))
         {
@@ -41,7 +41,7 @@ public sealed class GeonamesCities500RunnerTests : HostedUnitTest
         }
 
         string resultPath = await _fileOperationsUtil.ExtractDataFile(zipFilePath, cancellationToken: cancellationToken);
-        string result = (await _fileUtil.Read(resultPath)).Replace("\r\n", "\n");
+        string result = (await _fileUtil.Read(resultPath, cancellationToken: cancellationToken)).Replace("\r\n", "\n");
 
         await Assert.That(result.Trim()).IsEqualTo("New York City\tNY\t40.71427\t-74.00597");
     }
